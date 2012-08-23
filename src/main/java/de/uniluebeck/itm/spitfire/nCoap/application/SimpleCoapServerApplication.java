@@ -34,7 +34,6 @@ import de.uniluebeck.itm.spitfire.nCoap.message.options.ToManyOptionsException;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
