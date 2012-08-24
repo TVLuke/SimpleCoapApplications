@@ -27,9 +27,10 @@ import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
 import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.MsgType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -43,7 +44,18 @@ import java.nio.charset.Charset;
  */
 public class SimpleCoapClientApplication extends CoapClientApplication {
 
-    private static Logger log = LoggerFactory.getLogger(SimpleCoapClientApplication.class.getName());
+    static{
+        String pattern = "%r ms: [%C{1}] %m %n";
+        PatternLayout patternLayout = new PatternLayout(pattern);
+
+        ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
+
+        Logger.getRootLogger().addAppender(consoleAppender);
+
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.message").setLevel(Level.ERROR);
+    }
+
+    private static Logger log = Logger.getLogger(SimpleCoapClientApplication.class.getName());
 
     private String name;
 
@@ -52,16 +64,21 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
     }
 
     /**
-     * The method to be called by the ResponseCallbackHandler when there was response reveived (both, piggy-backed
+     * The method to be called by the ResponseCallbackHandler when there was response received (for both, piggy-backed
      * or seperated).
      *
      * @param coapResponse the response message
      */
     @Override
     public void receiveCoapResponse(CoapResponse coapResponse) {
-        System.out.println("[" + name + "] response received.");
-        System.out.println("[" + name + "] Response payload: " +
-                new String(coapResponse.getPayload().array(), Charset.forName("UTF-8")));
+        int payloadLength = coapResponse.getPayload().readableBytes();
+
+        log.info("[" + name + "] response received (payload length: "
+                + payloadLength + " bytes).");
+
+        String payload = coapResponse.getPayload().toString(Charset.forName("UTF-8"));
+        log.info("[" + name + "] Response payload: " + payload);
+
     }
 
     /**
@@ -73,6 +90,7 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
         SimpleCoapClientApplication app = new SimpleCoapClientApplication("ClientApp");
         URI uri = new URI(args[0]);
         CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, uri, app);
+        log.info("Send request to " + coapRequest.getTargetUri());
         app.writeCoapRequest(coapRequest);
     }
 }
