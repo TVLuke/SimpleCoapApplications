@@ -23,14 +23,15 @@
 
 package de.uniluebeck.itm.spitfire.nCoap.application;
 
-import de.uniluebeck.itm.spitfire.nCoap.communication.blockwise.Blocksize;
 import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
 import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.MsgType;
-import org.apache.log4j.*;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 
@@ -44,34 +45,12 @@ import java.nio.charset.Charset;
 public class SimpleCoapClientApplication extends CoapClientApplication {
 
     static{
-        //String pattern = "%r ms: [%C{1}] %m %n";
-        //String pattern = "[%t] %d{ABSOLUTE}: [%C{1}] %m %n";
         String pattern = "%-23d{yyyy-MM-dd HH:mm:ss,SSS} | %-32.32t | %-30.30c{1} | %-5p | %m%n";
         PatternLayout patternLayout = new PatternLayout(pattern);
 
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
-        try {
-            FileAppender fileAppender = new FileAppender(patternLayout, "coap.log");
-            Logger.getRootLogger().addAppender(fileAppender);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         Logger.getRootLogger().addAppender(consoleAppender);
-
-        Logger.getRootLogger().setLevel(Level.ERROR);
-
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.blockwise")
-              .setLevel(Level.DEBUG);
-
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability")
-              .setLevel(Level.DEBUG);
-
-//        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding.CoapMessageDecoder")
-//              .setLevel(Level.DEBUG);
-
-        Logger.getLogger(SimpleCoapClientApplication.class.getName())
-              .setLevel(Level.DEBUG);
+        Logger.getRootLogger().setLevel(Level.INFO);
     }
 
     private static Logger log = Logger.getLogger(SimpleCoapClientApplication.class.getName());
@@ -83,7 +62,7 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
         this.name = name;
     }
     /**
-     * The method to be called by the ResponseCallbackHandler when there was response received (for both, piggy-backed
+     * The method is called by the nCoap framework when there was a response received (for both, piggy-backed
      * or seperated).
      *
      * @param coapResponse the response message
@@ -100,25 +79,33 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
 
     }
 
-        /**
+    @Override
+    public void receiveEmptyACK() {
+       log.info("Empty ACK received! Waiting for seperate response...");
+    }
+
+    @Override
+    public void handleRetransmissionTimout() {
+        log.info("Maximum number of retransmissions reached. Giving up!");
+    }
+
+
+    /**
      * The main method to start the SimpleApplication
      * @param args args[0] must contain the target URI for the GET request
      * @throws Exception
      */
     public static void main(String[] args) throws Exception{
-        SimpleCoapClientApplication app1 = new SimpleCoapClientApplication("Client 1");
-        URI uri = new URI(args[0]);
-        CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, uri, app1);
-        coapRequest.setMaxBlocksizeForResponse(Blocksize.SIZE_256);
-        log.info(app1.name + ": Send request to " + coapRequest.getTargetUri());
-        app1.writeCoapRequest(coapRequest);
+        //instanciate client application
+        SimpleCoapClientApplication client = new SimpleCoapClientApplication("Client 1");
 
-//        Thread.sleep(4000);
-//        SimpleCoapClientApplication app2 = new SimpleCoapClientApplication("Client 2");
-//        URI uri2 = new URI(args[0]);
-//        CoapRequest coapRequest2 = new CoapRequest(MsgType.CON, Code.GET, uri2, app2);
-//        coapRequest2.setMaxBlocksizeForResponse(Blocksize.SIZE_256);
-//        log.info(app2.name + ": Send request to " + coapRequest2.getTargetUri());
-//        app2.writeCoapRequest(coapRequest2);
+        //create request
+        URI targetURI = new URI(args[0]);
+        CoapRequest coapRequest = new CoapRequest(MsgType.CON, Code.GET, targetURI, client);
+        coapRequest.setObserveOptionRequest();
+        log.info(client.name + ": Send request to " + coapRequest.getTargetUri());
+        client.writeCoapRequest(coapRequest);
     }
+
+
 }
