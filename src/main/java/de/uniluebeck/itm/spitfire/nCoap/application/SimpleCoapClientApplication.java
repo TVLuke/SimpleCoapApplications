@@ -91,7 +91,7 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
 
 
     /**
-     * The main method to start the SimpleApplication
+     * The main method to start the client.
      * @param args args[0] must contain the target URI for the GET request
      * @throws Exception
      */

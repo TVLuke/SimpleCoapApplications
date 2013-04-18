@@ -61,15 +61,15 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
         }
 
         for(Option option : request.getOption(OptionName.ACCEPT)){
-            MediaType accepted = MediaType.getByNumber(((UintOption) option).getDecodedValue());
-            log.debug("Try to create payload for accepted mediatype " + accepted);
-            byte[] payload = createPayloadFromAcutualStatus(accepted);
+            MediaType acceptedMediaType = MediaType.getByNumber(((UintOption) option).getDecodedValue());
+            log.debug("Try to create payload for accepted mediatype " + acceptedMediaType);
+            byte[] payload = createPayloadFromAcutualStatus(acceptedMediaType);
 
             //the requested mediatype is supported
             if(payload != null){
                 CoapResponse response = new CoapResponse(Code.CONTENT_205);
                 response.setPayload(payload);
-                response.setContentType(accepted);
+                response.setContentType(acceptedMediaType);
                 return response;
             }
         }
