@@ -23,7 +23,6 @@
 
 package de.uniluebeck.itm.spitfire.nCoap.application.server;
 
-import de.uniluebeck.itm.spitfire.nCoap.application.CoapServerApplication;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -40,11 +39,12 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
 
     //Initialize logging
     static{
-        String pattern = "%r ms: [%C{1}] %m %n";
+        //String pattern = "%r ms: [%C{1}] %m %n";
+        String pattern = "%-23d{yyyy-MM-dd HH:mm:ss,SSS} | %-32.32t | %-35.35c{1} | %-5p | %m%n";
         PatternLayout patternLayout = new PatternLayout(pattern);
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
         Logger.getRootLogger().addAppender(consoleAppender);
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+        Logger.getRootLogger().setLevel(Level.INFO);
     }
 
     private static Logger log = Logger.getLogger(SimpleCoapServerApplication.class.getName());
@@ -57,7 +57,12 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
 
         //register resource(s)
         server.registerService(new SimpleNotObservableWebservice("/simple/not-observable", new Long(10)));
-        server.registerService(new SimpleObservableWebservice("/simple/observable", true));
+        server.registerService(new SimpleNotObservableWebServiceWithDelay("/simple/not-observable-with-delay-3000", new Long(10), 3000));
+
+        //Time service
+        SimpleObservableTimeService timeService = new SimpleObservableTimeService("/simple/observable-utc-time");
+        server.registerService(timeService);
+        timeService.schedulePeriodicResourceUpdate();
 
         //That's it!
     }

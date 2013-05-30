@@ -1,6 +1,6 @@
 package de.uniluebeck.itm.spitfire.nCoap.application.server;
 
-import de.uniluebeck.itm.spitfire.nCoap.application.webservice.NotObservableWebService;
+import de.uniluebeck.itm.spitfire.nCoap.application.server.webservice.NotObservableWebService;
 import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
 import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
 import de.uniluebeck.itm.spitfire.nCoap.message.MessageDoesNotAllowPayloadException;
@@ -29,7 +29,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
         super(servicePath, initialStatus);
     }
 
-    @Override
+   @Override
     public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
         log.debug("Service at " + getPath() + " received request (" + request.getCode() + ").");
         try{
@@ -124,5 +124,10 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
         else{
             return null;
         }
+    }
+
+    @Override
+    public void shutdown() {
+        //Nothing to do here...
     }
 }
