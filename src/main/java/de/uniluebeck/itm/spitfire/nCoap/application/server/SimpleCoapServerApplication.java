@@ -44,7 +44,8 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
         PatternLayout patternLayout = new PatternLayout(pattern);
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
         Logger.getRootLogger().addAppender(consoleAppender);
-        Logger.getRootLogger().setLevel(Level.INFO);
+        Logger.getRootLogger().setLevel(Level.ERROR);
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding").setLevel(Level.INFO);
     }
 
     private static Logger log = Logger.getLogger(SimpleCoapServerApplication.class.getName());

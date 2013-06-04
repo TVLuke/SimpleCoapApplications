@@ -51,7 +51,10 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
 
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
         Logger.getRootLogger().addAppender(consoleAppender);
-        Logger.getRootLogger().setLevel(Level.INFO);
+        Logger.getRootLogger().setLevel(Level.ERROR);
+        //Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding").setLevel(Level.INFO);
+        Logger.getLogger(SimpleCoapClientApplication.class.getName()).setLevel(Level.INFO);
+        //Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability.incoming").setLevel(Level.DEBUG);
     }
 
     private static Logger log = Logger.getLogger(SimpleCoapClientApplication.class.getName());
@@ -70,13 +73,10 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
      */
     @Override
     public void receiveResponse(CoapResponse coapResponse) {
-        int payloadLength = coapResponse.getPayload().readableBytes();
-
-        log.info(name + ": " + coapResponse.getCode() + " received. Length: "
-                + payloadLength + " bytes).");
+        log.info(String.format("Incoming: %s", coapResponse));
 
         String payload = coapResponse.getPayload().toString(Charset.forName("UTF-8"));
-        log.info(name + ": Response payload: " + payload);
+        log.info(String.format("Payload: %s", payload));
 
     }
 

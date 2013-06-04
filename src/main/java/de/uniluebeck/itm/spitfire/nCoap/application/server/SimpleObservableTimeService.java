@@ -35,14 +35,14 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
                 setResourceStatus(System.currentTimeMillis());
                 log.info("New status of resource " + getPath() + ": " + getResourceStatus());
             }
-        },0, 100, TimeUnit.MILLISECONDS);
+        },0, 10, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
+    public CoapResponse processMessage(CoapRequest coapRequest, InetSocketAddress remoteAddress) {
         try{
-            if(request.getCode() == Code.GET)
-                return processGet(request);
+            if(coapRequest.getCode() == Code.GET)
+                return processGet(coapRequest);
             else
                 return new CoapResponse(Code.METHOD_NOT_ALLOWED_405);
         }
