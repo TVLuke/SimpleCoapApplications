@@ -67,12 +67,9 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
 
     private CoapResponse processGet(CoapRequest request) throws Exception{
 
-        //Initialize response and array for payload
-        CoapResponse coapResponse;
+        //Try to get the payload according to the requested media type
         MediaType contentType = null;
         byte[] payload = null;
-
-        //Try to get the payload according to the requested media type
         if(request.getAccept().isEmpty()){
             payload = getPayload(MediaType.TEXT_PLAIN_UTF8);
             contentType = MediaType.TEXT_PLAIN_UTF8;
@@ -88,6 +85,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         }
 
         //Prepare the response
+        CoapResponse coapResponse;
         if(payload != null && contentType != null){
             coapResponse = new CoapResponse(Code.CONTENT_205);
             coapResponse.setContentType(contentType);
