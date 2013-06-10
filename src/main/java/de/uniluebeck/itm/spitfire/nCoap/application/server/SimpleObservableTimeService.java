@@ -22,6 +22,8 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
 
     private Logger log = Logger.getLogger(SimpleObservableTimeService.class.getName());
 
+    public static int RESOURCE_UPDATE_INTERVAL_MILLIS = 20;
+
     public SimpleObservableTimeService(String path) {
         super(path, System.currentTimeMillis());
         setMaxAge(1);
@@ -35,7 +37,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
                 setResourceStatus(System.currentTimeMillis());
                 log.info("New status of resource " + getPath() + ": " + getResourceStatus());
             }
-        },0, 10, TimeUnit.MILLISECONDS);
+        },0, RESOURCE_UPDATE_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -51,26 +53,13 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         }
     }
 
-    private byte[] getPayload(MediaType mediaType){
-
-        if(mediaType != MediaType.TEXT_PLAIN_UTF8)
-            return null;
-
-        long time = getResourceStatus() % 86400000;
-        long hours = time / 3600000;
-        long remainder = time % 3600000;
-        long minutes = remainder / 60000;
-        long seconds = (remainder % 60000) / 1000;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds).getBytes(Charset.forName("UTF-8"));
-    }
-
     private CoapResponse processGet(CoapRequest request) throws Exception{
 
         //Try to get the payload according to the requested media type
         MediaType contentType = null;
         byte[] payload = null;
         if(request.getAccept().isEmpty()){
+            log.debug("Incoming request has no accept-option. Use " +  MediaType.TEXT_PLAIN_UTF8 + " as default.");
             payload = getPayload(MediaType.TEXT_PLAIN_UTF8);
             contentType = MediaType.TEXT_PLAIN_UTF8;
         }
@@ -101,6 +90,30 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         }
 
         return coapResponse;
+    }
+
+    private byte[] getPayload(MediaType mediaType){
+
+        log.debug("Try to create " + mediaType + " payload");
+
+        long time = getResourceStatus() % 86400000;
+        long hours = time / 3600000;
+        long remainder = time % 3600000;
+        long minutes = remainder / 60000;
+        long seconds = (remainder % 60000) / 1000;
+
+        if(mediaType == MediaType.TEXT_PLAIN_UTF8)
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds).getBytes(Charset.forName("UTF-8"));
+
+        else if(mediaType == MediaType.APP_XML)
+            return String.format("<time>\n" +
+                    "\t<hour>%02d</hour>\n" +
+                    "\t<minute>%02d</minute>\n" +
+                    "\t<second>%02d</second>\n" +
+                    "</time>", hours, minutes, seconds).getBytes(Charset.forName("UTF-8"));
+
+        else
+            return null;
     }
 
     @Override

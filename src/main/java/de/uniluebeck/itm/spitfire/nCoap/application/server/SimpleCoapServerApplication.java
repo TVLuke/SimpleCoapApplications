@@ -46,6 +46,10 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
         Logger.getRootLogger().addAppender(consoleAppender);
         Logger.getRootLogger().setLevel(Level.ERROR);
         Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding").setLevel(Level.INFO);
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability").setLevel(Level.INFO);
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.observe").setLevel(Level.DEBUG);
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.application").setLevel(Level.DEBUG);
+
     }
 
     private static Logger log = Logger.getLogger(SimpleCoapServerApplication.class.getName());
