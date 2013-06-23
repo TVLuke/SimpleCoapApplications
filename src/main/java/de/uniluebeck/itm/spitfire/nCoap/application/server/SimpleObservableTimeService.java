@@ -58,13 +58,13 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         //Try to get the payload according to the requested media type
         MediaType contentType = null;
         byte[] payload = null;
-        if(request.getAccept().isEmpty()){
+        if(request.getAcceptedMediaTypes().isEmpty()){
             log.debug("Incoming request has no accept-option. Use " +  MediaType.TEXT_PLAIN_UTF8 + " as default.");
             payload = getPayload(MediaType.TEXT_PLAIN_UTF8);
             contentType = MediaType.TEXT_PLAIN_UTF8;
         }
         else{
-            for(MediaType mediaType : request.getAccept()){
+            for(MediaType mediaType : request.getAcceptedMediaTypes()){
                 payload = getPayload(mediaType);
                 if(payload != null){
                     contentType = mediaType;
@@ -83,7 +83,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         else{
             coapResponse = new CoapResponse(Code.UNSUPPORTED_MEDIA_TYPE_415);
             String text = "Requested media type(s) not supported:";
-            for(MediaType mediaType : request.getAccept()){
+            for(MediaType mediaType : request.getAcceptedMediaTypes()){
                 text = text + "\n" + mediaType;
             }
             coapResponse.setPayload(text.getBytes(Charset.forName("UTF-8")));

@@ -31,7 +31,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
 
    @Override
     public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
-        log.debug("Service at " + getPath() + " received request (" + request.getCode() + ").");
+        log.info("Service " + getPath() + " received request: " + request);
         try{
             if(request.getCode() == Code.GET){
                 return processGet(request);
@@ -118,7 +118,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
             return payload.toString().getBytes(Charset.forName("UTF-8"));
         }
         else if(mediaType == TEXT_PLAIN_UTF8){
-            String payload = "The current value is " + getResourceStatus() + ".";
+            String payload = "The value is " + getResourceStatus() + ".";
             return payload.getBytes(Charset.forName("UTF-8"));
         }
         else{
