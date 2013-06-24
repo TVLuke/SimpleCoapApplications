@@ -22,11 +22,11 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
 
     private Logger log = Logger.getLogger(SimpleObservableTimeService.class.getName());
 
-    public static int RESOURCE_UPDATE_INTERVAL_MILLIS = 20;
+    public static int RESOURCE_UPDATE_INTERVAL_MILLIS = 5000;
 
     public SimpleObservableTimeService(String path) {
         super(path, System.currentTimeMillis());
-        setMaxAge(1);
+        setMaxAge(5);
     }
 
     public void schedulePeriodicResourceUpdate(){
@@ -49,6 +49,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
                 return new CoapResponse(Code.METHOD_NOT_ALLOWED_405);
         }
         catch(Exception e){
+            log.error("Exception", e);
             return new CoapResponse(Code.INTERNAL_SERVER_ERROR_500);
         }
     }
@@ -58,13 +59,14 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         //Try to get the payload according to the requested media type
         MediaType contentType = null;
         byte[] payload = null;
-        if(request.getAccept().isEmpty()){
-            log.debug("Incoming request has no accept-option. Use " +  MediaType.TEXT_PLAIN_UTF8 + " as default.");
+        if(request.getAcceptedMediaTypes().isEmpty()){
+            log.debug(String.format("Incoming request has no (supported) accept-option. Use %s as default.",
+                    MediaType.TEXT_PLAIN_UTF8));
             payload = getPayload(MediaType.TEXT_PLAIN_UTF8);
             contentType = MediaType.TEXT_PLAIN_UTF8;
         }
         else{
-            for(MediaType mediaType : request.getAccept()){
+            for(MediaType mediaType : request.getAcceptedMediaTypes()){
                 payload = getPayload(mediaType);
                 if(payload != null){
                     contentType = mediaType;
@@ -83,7 +85,7 @@ public class SimpleObservableTimeService extends ObservableWebService<Long> {
         else{
             coapResponse = new CoapResponse(Code.UNSUPPORTED_MEDIA_TYPE_415);
             String text = "Requested media type(s) not supported:";
-            for(MediaType mediaType : request.getAccept()){
+            for(MediaType mediaType : request.getAcceptedMediaTypes()){
                 text = text + "\n" + mediaType;
             }
             coapResponse.setPayload(text.getBytes(Charset.forName("UTF-8")));

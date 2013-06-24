@@ -23,11 +23,9 @@
 
 package de.uniluebeck.itm.spitfire.nCoap.application.server;
 
+import de.uniluebeck.itm.spitfire.nCoap.communication.reliability.outgoing.RetransmissionTimeoutMessage;
 import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.*;
 
 /**
  * This is a very simple server application providing a .well-known/core resource and a simple resource both only
@@ -42,12 +40,13 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
         //String pattern = "%r ms: [%C{1}] %m %n";
         String pattern = "%-23d{yyyy-MM-dd HH:mm:ss,SSS} | %-32.32t | %-35.35c{1} | %-5p | %m%n";
         PatternLayout patternLayout = new PatternLayout(pattern);
-        ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
-        Logger.getRootLogger().addAppender(consoleAppender);
+
+        AsyncAppender appender = new AsyncAppender();
+        appender.addAppender(new ConsoleAppender(patternLayout));
+        Logger.getRootLogger().addAppender(appender);
+
         Logger.getRootLogger().setLevel(Level.ERROR);
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding").setLevel(Level.INFO);
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability").setLevel(Level.INFO);
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.observe").setLevel(Level.DEBUG);
+        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability").setLevel(Level.DEBUG);
         Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.application").setLevel(Level.DEBUG);
 
     }
@@ -61,19 +60,23 @@ public class SimpleCoapServerApplication extends CoapServerApplication {
         log.info("Server started and listening on port " + server.getServerPort());
 
         //register resource(s)
-        server.registerService(new SimpleNotObservableWebservice("/simple/not-observable", new Long(10)));
-        server.registerService(new SimpleNotObservableWebServiceWithDelay("/simple/not-observable-with-delay-3000", new Long(10), 3000));
+        //server.registerService(new SimpleNotObservableWebservice("/simple/not-observable", new Long(10)));
+
+        for(int i = 1; i <= 100; i++){
+            server.registerService(new SimpleNotObservableWebServiceWithDelay("/service" + i,
+                    new Long(10), 3000));
+        }
 
         //Time service
-        SimpleObservableTimeService timeService = new SimpleObservableTimeService("/simple/observable-utc-time");
-        server.registerService(timeService);
-        timeService.schedulePeriodicResourceUpdate();
+//        SimpleObservableTimeService timeService = new SimpleObservableTimeService("/simple/observable-utc-time");
+//        server.registerService(timeService);
+//        timeService.schedulePeriodicResourceUpdate();
 
         //That's it!
     }
 
     @Override
-    public void handleRetransmissionTimout() {
+    public void processRetransmissionTimeout(RetransmissionTimeoutMessage timeoutMessage) {
        log.info("Response could not be delivered.");
     }
 }
