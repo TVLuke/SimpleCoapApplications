@@ -62,7 +62,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>de.uniluebeck.itm.spitfire.nCoap.application.server.SimpleCoapServerApplication</mainClass>
+                            <mainClass>de.uniluebeck.itm.ncoap.application.server.SimpleCoapServerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
