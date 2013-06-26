@@ -1,10 +1,10 @@
-package de.uniluebeck.itm.spitfire.nCoap.application.server;
+package de.uniluebeck.itm.ncoap.application.server;
 
-import de.uniluebeck.itm.spitfire.nCoap.application.server.webservice.ObservableWebService;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
-import de.uniluebeck.itm.spitfire.nCoap.message.options.OptionRegistry.MediaType;
+import de.uniluebeck.itm.ncoap.application.server.webservice.ObservableWebService;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.CoapResponse;
+import de.uniluebeck.itm.ncoap.message.header.Code;
+import de.uniluebeck.itm.ncoap.message.options.OptionRegistry.MediaType;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;

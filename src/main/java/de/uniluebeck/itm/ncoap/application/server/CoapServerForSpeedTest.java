@@ -1,4 +1,4 @@
-package de.uniluebeck.itm.spitfire.nCoap.application.server;
+package de.uniluebeck.itm.ncoap.application.server;
 
 import org.apache.log4j.*;
 
@@ -29,7 +29,7 @@ public class CoapServerForSpeedTest {
 
         //Define loglevel
         Logger.getRootLogger().setLevel(Level.ERROR);
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.application.server.SimpleNotObservableWebservice")
+        Logger.getLogger("de.uniluebeck.itm.ncoap.application.server.SimpleNotObservableWebservice")
               .setLevel(Level.INFO);
     }
 

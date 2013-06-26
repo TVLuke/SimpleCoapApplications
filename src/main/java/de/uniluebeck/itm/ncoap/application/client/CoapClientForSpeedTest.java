@@ -1,14 +1,12 @@
-package de.uniluebeck.itm.spitfire.nCoap.application.client;
+package de.uniluebeck.itm.ncoap.application.client;
 
-import de.uniluebeck.itm.spitfire.nCoap.communication.reliability.outgoing.EmptyAcknowledgementProcessor;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.MsgType;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.CoapResponse;
+import de.uniluebeck.itm.ncoap.message.header.Code;
+import de.uniluebeck.itm.ncoap.message.header.MsgType;
 import org.apache.log4j.*;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 /**
@@ -31,11 +29,11 @@ public class CoapClientForSpeedTest {
         //Appenders
         AsyncAppender appender = new AsyncAppender();
         appender.addAppender(new ConsoleAppender(patternLayout));
-        Logger.getRootLogger().addAppender(appender);
-
         appender.setBufferSize(2000000);
 
-        //Define loglevel
+        Logger.getRootLogger().addAppender(appender);
+
+        //Define log levels
         Logger.getRootLogger().setLevel(Level.ERROR);
         Logger.getLogger(CoapClientForSpeedTest.class.getName()).setLevel(Level.INFO);
     }

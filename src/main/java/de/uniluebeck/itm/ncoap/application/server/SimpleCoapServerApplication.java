@@ -21,10 +21,10 @@
 // * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // */
 //
-//package de.uniluebeck.itm.spitfire.nCoap.application.server;
+//package de.uniluebeck.itm.ncoap.application.server;
 //
-//import de.uniluebeck.itm.spitfire.nCoap.communication.reliability.outgoing.RetransmissionTimeoutMessage;
-//import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
+//import de.uniluebeck.itm.ncoap.communication.reliability.outgoing.InternalRetransmissionTimeoutMessage;
+//import de.uniluebeck.itm.ncoap.message.header.Code;
 //import org.apache.log4j.ConsoleAppender;
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
@@ -46,10 +46,10 @@
 //        ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
 //        Logger.getRootLogger().addAppender(consoleAppender);
 //        Logger.getRootLogger().setLevel(Level.ERROR);
-//        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.encoding").setLevel(Level.INFO);
-//        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.reliability").setLevel(Level.INFO);
-//        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.communication.observe").setLevel(Level.DEBUG);
-//        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.application").setLevel(Level.DEBUG);
+//        Logger.getLogger("de.uniluebeck.itm.ncoap.communication.encoding").setLevel(Level.INFO);
+//        Logger.getLogger("de.uniluebeck.itm.ncoap.communication.reliability").setLevel(Level.INFO);
+//        Logger.getLogger("de.uniluebeck.itm.ncoap.communication.observe").setLevel(Level.DEBUG);
+//        Logger.getLogger("de.uniluebeck.itm.ncoap.application").setLevel(Level.DEBUG);
 //
 //    }
 //
@@ -74,7 +74,7 @@
 //    }
 //
 //    @Override
-//    public void processRetransmissionTimeout(RetransmissionTimeoutMessage timeoutMessage) {
+//    public void processRetransmissionTimeout(InternalRetransmissionTimeoutMessage timeoutMessage) {
 //        //To change body of implemented methods use File | Settings | File Templates.
 //    }
 //}
