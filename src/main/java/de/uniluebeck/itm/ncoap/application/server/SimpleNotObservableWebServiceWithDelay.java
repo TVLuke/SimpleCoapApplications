@@ -1,7 +1,7 @@
-package de.uniluebeck.itm.spitfire.nCoap.application.server;
+package de.uniluebeck.itm.ncoap.application.server;
 
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.CoapResponse;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;

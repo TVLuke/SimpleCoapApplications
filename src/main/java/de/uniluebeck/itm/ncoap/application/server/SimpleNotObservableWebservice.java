@@ -1,22 +1,22 @@
-package de.uniluebeck.itm.spitfire.nCoap.application.server;
+package de.uniluebeck.itm.ncoap.application.server;
 
-import de.uniluebeck.itm.spitfire.nCoap.application.server.webservice.NotObservableWebService;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
-import de.uniluebeck.itm.spitfire.nCoap.message.MessageDoesNotAllowPayloadException;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
-import de.uniluebeck.itm.spitfire.nCoap.message.options.Option;
-import de.uniluebeck.itm.spitfire.nCoap.message.options.UintOption;
+import de.uniluebeck.itm.ncoap.application.server.webservice.NotObservableWebService;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.CoapResponse;
+import de.uniluebeck.itm.ncoap.message.MessageDoesNotAllowPayloadException;
+import de.uniluebeck.itm.ncoap.message.header.Code;
+import de.uniluebeck.itm.ncoap.message.options.Option;
+import de.uniluebeck.itm.ncoap.message.options.UintOption;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static de.uniluebeck.itm.spitfire.nCoap.message.options.OptionRegistry.MediaType;
-import static de.uniluebeck.itm.spitfire.nCoap.message.options.OptionRegistry.MediaType.APP_XML;
-import static de.uniluebeck.itm.spitfire.nCoap.message.options.OptionRegistry.MediaType.TEXT_PLAIN_UTF8;
-import static de.uniluebeck.itm.spitfire.nCoap.message.options.OptionRegistry.OptionName;
+import static de.uniluebeck.itm.ncoap.message.options.OptionRegistry.MediaType;
+import static de.uniluebeck.itm.ncoap.message.options.OptionRegistry.MediaType.APP_XML;
+import static de.uniluebeck.itm.ncoap.message.options.OptionRegistry.MediaType.TEXT_PLAIN_UTF8;
+import static de.uniluebeck.itm.ncoap.message.options.OptionRegistry.OptionName;
 
 /**
  * This is a simple not observable webservice. It accepts
@@ -31,7 +31,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
 
    @Override
     public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
-        log.debug("Service at " + getPath() + " received request (" + request.getCode() + ").");
+        log.info("Service " + getPath() + " received request: " + request);
         try{
             if(request.getCode() == Code.GET){
                 return processGet(request);
@@ -118,7 +118,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
             return payload.toString().getBytes(Charset.forName("UTF-8"));
         }
         else if(mediaType == TEXT_PLAIN_UTF8){
-            String payload = "The current value is " + getResourceStatus() + ".";
+            String payload = "The value is " + getResourceStatus() + ".";
             return payload.getBytes(Charset.forName("UTF-8"));
         }
         else{
