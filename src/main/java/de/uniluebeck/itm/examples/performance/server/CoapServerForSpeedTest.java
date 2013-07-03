@@ -1,5 +1,7 @@
-package de.uniluebeck.itm.ncoap.application.server;
+package de.uniluebeck.itm.examples.performance.server;
 
+import de.uniluebeck.itm.examples.simple.server.SimpleNotObservableWebservice;
+import de.uniluebeck.itm.ncoap.application.server.CoapServerApplication;
 import org.apache.log4j.*;
 
 /**
@@ -11,7 +13,7 @@ import org.apache.log4j.*;
  */
 public class CoapServerForSpeedTest {
 
-    public static final int NO_OF_SERVICES = 1000;
+    public static final int NO_OF_SERVICES = 20;
 
     private static Logger log = Logger.getLogger(CoapServerForSpeedTest.class.getName());
 
@@ -28,9 +30,7 @@ public class CoapServerForSpeedTest {
         appender.setBufferSize(2000000);
 
         //Define loglevel
-        Logger.getRootLogger().setLevel(Level.ERROR);
-        Logger.getLogger("de.uniluebeck.itm.ncoap.application.server.SimpleNotObservableWebservice")
-              .setLevel(Level.INFO);
+        Logger.getRootLogger().setLevel(Level.DEBUG);
     }
 
     public static void main(String[] args){

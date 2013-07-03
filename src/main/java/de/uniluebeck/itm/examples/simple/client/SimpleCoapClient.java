@@ -21,17 +21,15 @@
 * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package de.uniluebeck.itm.spitfire.nCoap.application.client;
+package de.uniluebeck.itm.examples.simple.client;
 
-import de.uniluebeck.itm.spitfire.nCoap.communication.reliability.outgoing.RetransmissionTimeoutMessage;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapRequest;
-import de.uniluebeck.itm.spitfire.nCoap.message.CoapResponse;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.Code;
-import de.uniluebeck.itm.spitfire.nCoap.message.header.MsgType;
+import de.uniluebeck.itm.examples.performance.client.CoapClientApplication;
+import de.uniluebeck.itm.ncoap.message.CoapRequest;
+import de.uniluebeck.itm.ncoap.message.header.Code;
+import de.uniluebeck.itm.ncoap.message.header.MsgType;
 import org.apache.log4j.*;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 
 
 /**
@@ -40,10 +38,7 @@ import java.nio.charset.Charset;
 *
 * @author Oliver Kleine
 */
-public class SimpleCoapClientApplication extends CoapClientApplication {
-
-    public static final int NO_OF_PARALLEL_REQUESTS = 2;
-    private Logger log = Logger.getLogger(this.getClass().getName());
+public class SimpleCoapClient {
 
     static{
         String pattern = "%-23d{yyyy-MM-dd HH:mm:ss,SSS} | %-32.32t | %-30.30c{1} | %-5p | %m%n";
@@ -54,8 +49,7 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
         Logger.getRootLogger().addAppender(appender);
 
         Logger.getRootLogger().setLevel(Level.ERROR);
-        Logger.getLogger("de.uniluebeck.itm.spitfire.nCoap.application.client").setLevel(Level.INFO);
-
+        Logger.getLogger("de.uniluebeck.itm.examples.simple.client").setLevel(Level.INFO);
     }
 
     /**
@@ -66,10 +60,9 @@ public class SimpleCoapClientApplication extends CoapClientApplication {
     public static void main(String[] args) throws Exception{
         CoapClientApplication client = new CoapClientApplication();
 
-        for(int i = 1; i <= NO_OF_PARALLEL_REQUESTS; i++){
-            URI targetURI = new URI ("coap://localhost/service" + i);
-            CoapRequest coapRequest =  new CoapRequest(MsgType.CON, Code.GET, targetURI);
-            client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());
-        }
+        URI targetURI = new URI ("coap://localhost//simple/observable-utc-time");
+        CoapRequest coapRequest =  new CoapRequest(MsgType.CON, Code.GET, targetURI);
+        client.writeCoapRequest(coapRequest, new SimpleResponseProcessor());
+
     }
 }

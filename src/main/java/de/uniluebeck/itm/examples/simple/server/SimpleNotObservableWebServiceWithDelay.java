@@ -1,5 +1,6 @@
-package de.uniluebeck.itm.ncoap.application.server;
+package de.uniluebeck.itm.examples.simple.server;
 
+import com.google.common.util.concurrent.SettableFuture;
 import de.uniluebeck.itm.ncoap.message.CoapRequest;
 import de.uniluebeck.itm.ncoap.message.CoapResponse;
 import org.apache.log4j.Logger;
@@ -13,7 +14,7 @@ import java.net.InetSocketAddress;
  * Time: 15:18
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleNotObservableWebServiceWithDelay extends SimpleNotObservableWebservice{
+public class SimpleNotObservableWebServiceWithDelay extends SimpleNotObservableWebservice {
 
     private static Logger log = Logger.getLogger(SimpleNotObservableWebservice.class.getName());
     private long delay;
@@ -24,13 +25,14 @@ public class SimpleNotObservableWebServiceWithDelay extends SimpleNotObservableW
     }
 
     @Override
-    public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
+    public void processCoapRequest(SettableFuture<CoapResponse> responseFuture, CoapRequest request,
+                                   InetSocketAddress remoteAddress) {
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             log.error("This should never happen.", e);
         }
 
-        return super.processMessage(request, remoteAddress);
+        super.processCoapRequest(responseFuture, request, remoteAddress);
     }
 }

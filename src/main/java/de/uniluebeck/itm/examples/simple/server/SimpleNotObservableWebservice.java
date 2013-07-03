@@ -1,5 +1,6 @@
-package de.uniluebeck.itm.ncoap.application.server;
+package de.uniluebeck.itm.examples.simple.server;
 
+import com.google.common.util.concurrent.SettableFuture;
 import de.uniluebeck.itm.ncoap.application.server.webservice.NotObservableWebService;
 import de.uniluebeck.itm.ncoap.message.CoapRequest;
 import de.uniluebeck.itm.ncoap.message.CoapResponse;
@@ -30,25 +31,26 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
     }
 
    @Override
-    public CoapResponse processMessage(CoapRequest request, InetSocketAddress remoteAddress) {
+   public void processCoapRequest(SettableFuture<CoapResponse> responseFuture, CoapRequest request,
+                                  InetSocketAddress remoteAddress) {
         log.info("Service " + getPath() + " received request: " + request);
         try{
             if(request.getCode() == Code.GET){
-                return processGet(request);
+                processGet(responseFuture, request);
             }
             else if(request.getCode() == Code.POST){
-                return processPost(request);
+                processPost(responseFuture, request);
             }
             else{
-                return new CoapResponse(Code.METHOD_NOT_ALLOWED_405);
+                responseFuture.set(new CoapResponse(Code.METHOD_NOT_ALLOWED_405));
             }
         }
         catch(Exception e){
-            return new CoapResponse(Code.INTERNAL_SERVER_ERROR_500);
+            responseFuture.set(new CoapResponse(Code.INTERNAL_SERVER_ERROR_500));
         }
     }
 
-    private CoapResponse processGet(CoapRequest request) throws Exception{
+    private void processGet(SettableFuture<CoapResponse> responseFuture, CoapRequest request) throws Exception{
 
         List<Option> acceptOptions = request.getOption(OptionName.ACCEPT);
 
@@ -57,7 +59,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
             CoapResponse response = new CoapResponse(Code.CONTENT_205);
             response.setPayload(createPayloadFromAcutualStatus(TEXT_PLAIN_UTF8));
             response.setContentType(TEXT_PLAIN_UTF8);
-            return response;
+            responseFuture.set(response);
         }
 
         for(Option option : request.getOption(OptionName.ACCEPT)){
@@ -70,16 +72,16 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
                 CoapResponse response = new CoapResponse(Code.CONTENT_205);
                 response.setPayload(payload);
                 response.setContentType(acceptedMediaType);
-                return response;
+                responseFuture.set(response);
             }
         }
 
         //This is only reached if all accepted mediatypes are not supported!
         CoapResponse response = new CoapResponse(Code.UNSUPPORTED_MEDIA_TYPE_415);
-        return response;
+        responseFuture.set(response);
     }
 
-    private synchronized CoapResponse processPost(CoapRequest request){
+    private synchronized void processPost(SettableFuture<CoapResponse> responseFuture, CoapRequest request){
         CoapResponse response;
         try{
             //parse new status value
@@ -94,7 +96,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
             response.setPayload(createPayloadFromAcutualStatus(TEXT_PLAIN_UTF8));
             response.setContentType(MediaType.TEXT_PLAIN_UTF8);
 
-            return response;
+            responseFuture.set(response);
 
         }
         catch(Exception e){
@@ -104,7 +106,7 @@ public class SimpleNotObservableWebservice extends NotObservableWebService<Long>
             } catch (MessageDoesNotAllowPayloadException e1) {
                 //This should never happen!
             }
-            return response;
+            responseFuture.set(response);
         }
     }
 

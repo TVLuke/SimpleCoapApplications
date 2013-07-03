@@ -1,4 +1,4 @@
-package de.uniluebeck.itm.ncoap.application.client;
+package de.uniluebeck.itm.examples.performance.client;
 
 import de.uniluebeck.itm.ncoap.message.CoapRequest;
 import de.uniluebeck.itm.ncoap.message.CoapResponse;
